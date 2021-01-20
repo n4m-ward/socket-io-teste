@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="card is-half" id="card">
+        <header class="card-header">
+          <p class="card-header-title">
+            Chat
+          </p>
+          <input class="input is-rounded is-small" type="text" placeholder="digite seu username" id="userName">
+          <a href="#" class="card-header-icon" aria-label="more options">
+            <span class="icon">
+              <i class="fas fa-angle-down" aria-hidden="true"></i>
+            </span>
+          </a>
+        </header>
+        <div class="card-content">
+          <div class="content" id="chat">
+
+        </div>
+        <footer class="card-footer">
+            <input class="input" type="text" placeholder="Primary input" id="input">
+            <button href="" class="button is-primary is-light" onclick="enviarMsg()">Enviar</button>
+        </footer>
+      </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.5/socket.io.js" integrity="sha512-2rUSTSAeOO02jF6eBqENNqPs1EohenJ5j+1dgDPdXSLz9nOlrr8DJk4zW/lDy8rjhGCSonW3Gx812XJQIKZKJQ==" crossorigin="anonymous"></script>
+<script>
+    const socket = io("http://localhost:3000")
+    socket.on("disconnect",()=>{
+        console.log("desconectado")
+    })
+    function enviarMsg(){
+        const inputData = document.getElementById("input").value;
+        const username = document.getElementById("userName").value;
+        socket.emit("mensagem",{msg:inputData,username});
+
+        socket.on("showMsg",(data)=>{
+            const {msg} = data;
+            const chat = document.getElementById("chat");
+            const p = document.createElement("p");
+            p.innerHTML = msg;
+            chat.appendChild(p)
+        })
+    }
+    
+</script>
+<script src="https://www.jsdelivr.com/package/npm/bulma"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
+<style>
+    body{
+        display:flex;
+        flex-direction: row;
+        text-align:center;
+        align-items: center;
+    }
+    #card{
+        max-width:600px;
+        margin:0 auto;
+        margin-top:40px;
+        height:500px;
+    }
+    #userName{
+        margin-bottom:-30px;
+    }
+    .content{
+        height:350px;
+        overflow: auto;
+    }
+</style>
+</html>
